@@ -1,0 +1,22 @@
+{
+  "name": "rabbit/amqp",
+  "description": "rabbit amqp",
+  "type": "library",
+  "require": {
+    "rabbit/framework": "dev-master",
+    "rabbit/compool": "dev-master",
+    "php-amqplib/php-amqplib": "^2.11"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "albert",
+      "email": "63851587@qq.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Rabbit\\Amqp\\": "src/"
+    }
+  }
+}
