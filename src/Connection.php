@@ -7,6 +7,7 @@ use ErrorException;
 use Exception;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
 use rabbit\compool\AbstractCom;
 use rabbit\exception\NotSupportedException;
 
@@ -70,6 +71,36 @@ class Connection extends AbstractCom
             $this->release();
         }
         return $result;
+    }
+
+    /**
+     * @param string $queue
+     * @param string $consumer_tag
+     * @param bool $no_local
+     * @param bool $no_ack
+     * @param bool $exclusive
+     * @param bool $nowait
+     * @param callable|null $callback
+     * @param int|null $ticket
+     * @param array $arguments
+     */
+    public function consume(string $consumer_tag = '',
+                            bool $no_local = false,
+                            bool $no_ack = false,
+                            bool $exclusive = false,
+                            bool $nowait = false,
+                            callable $callback = null,
+                            int $ticket = null,
+                            array $arguments = [])
+    {
+        $this->channel->basic_consume($this->queue, $consumer_tag, $no_local, $no_ack, $exclusive, $nowait, function (AMQPMessage $message) use ($callback) {
+            call_user_func($callback, $message);
+            $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
+            if ($message->body === 'quit') {
+                $message->delivery_info['channel']->basic_cancel($message->delivery_info['consumer_tag']);
+            }
+        }, $ticket, $arguments);
+        $this->wait();
     }
 
     /**
