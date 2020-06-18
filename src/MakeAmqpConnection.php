@@ -6,9 +6,9 @@ namespace Rabbit\Amqp;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
-use rabbit\compool\BaseCompool;
-use rabbit\compool\ComPoolProperties;
 use rabbit\core\ObjectFactory;
+use rabbit\pool\BasePool;
+use rabbit\pool\BasePoolProperties;
 
 /**
  * Class MakeAmqpConnection
@@ -27,18 +27,18 @@ class MakeAmqpConnection
     {
         /** @var Manager $manager */
         $manager = getDI('amqp');
-        if (!$manager->hasConnection($name)) {
+        if (!$manager->has($name)) {
             $conn = [
                 $name =>
                     ObjectFactory::createObject([
-                        'class' => BaseCompool::class,
+                        'class' => BasePool::class,
                         'comClass' => Connection::class,
                         'poolConfig' => ObjectFactory::createObject([
-                            'class' => ComPoolProperties::class,
+                            'class' => BasePoolProperties::class,
                             'config' => $config
                         ], [], false)
                     ], [], false)];
-            $manager->addConnection($conn);
+            $manager->add($conn);
         }
     }
 }

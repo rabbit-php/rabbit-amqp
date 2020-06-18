@@ -4,7 +4,7 @@
   "type": "library",
   "require": {
     "rabbit/framework": "dev-master",
-    "rabbit/compool": "dev-master",
+    "rabbit/pool": "dev-master",
     "php-amqplib/php-amqplib": "^2.11"
   },
   "license": "MIT",

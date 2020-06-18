@@ -10,12 +10,13 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use rabbit\compool\AbstractCom;
 use rabbit\exception\NotSupportedException;
+use rabbit\pool\AbstractBase;
 
 /**
  * Class Connection
  * @package Rabbit\Amqp
  */
-class Connection extends AbstractCom
+class Connection extends AbstractBase
 {
     /** @var string */
     public $queue;
