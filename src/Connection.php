@@ -8,9 +8,8 @@ use Exception;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
-use rabbit\compool\AbstractCom;
-use rabbit\exception\NotSupportedException;
-use rabbit\pool\AbstractBase;
+use Rabbit\Base\Exception\NotSupportedException;
+use Rabbit\Pool\AbstractBase;
 
 /**
  * Class Connection
@@ -19,21 +18,21 @@ use rabbit\pool\AbstractBase;
 class Connection extends AbstractBase
 {
     /** @var string */
-    public $queue;
+    public ?string $queue = null;
     /** @var string */
-    public $exchange;
+    public ?string $exchange = null;
     /** @var array */
-    protected $connParams = [];
+    protected array $connParams = [];
     /** @var array */
-    protected $queueDeclare = [];
+    protected array $queueDeclare = [];
     /** @var array */
-    protected $exchangeDeclare = [];
+    protected array $exchangeDeclare = [];
     /** @var array */
-    protected $queueBind = [];
+    protected array $queueBind = [];
     /** @var AMQPStreamConnection */
-    protected $conn;
+    protected AMQPStreamConnection $conn;
     /** @var AMQPChannel */
-    protected $channel;
+    protected AMQPChannel $channel;
 
     /**
      * @throws Exception
@@ -84,6 +83,7 @@ class Connection extends AbstractBase
      * @param callable|null $callback
      * @param int|null $ticket
      * @param array $arguments
+     * @throws ErrorException
      */
     public function consume(string $consumer_tag = '',
                             bool $no_local = false,

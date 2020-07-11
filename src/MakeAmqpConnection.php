@@ -6,9 +6,10 @@ namespace Rabbit\Amqp;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
-use rabbit\core\ObjectFactory;
-use rabbit\pool\BasePool;
-use rabbit\pool\BasePoolProperties;
+use Rabbit\Pool\BaseManager;
+use Rabbit\Pool\BasePool;
+use Rabbit\Pool\BasePoolProperties;
+use Throwable;
 
 /**
  * Class MakeAmqpConnection
@@ -21,19 +22,19 @@ class MakeAmqpConnection
      * @param array $config
      * @throws DependencyException
      * @throws NotFoundException
-     * @throws Exception
+     * @throws Throwable
      */
     public static function addConnection(string $name, array $config = []): void
     {
-        /** @var Manager $manager */
+        /** @var BaseManager $manager */
         $manager = getDI('amqp');
         if (!$manager->has($name)) {
             $conn = [
                 $name =>
-                    ObjectFactory::createObject([
+                    create([
                         'class' => BasePool::class,
                         'comClass' => Connection::class,
-                        'poolConfig' => ObjectFactory::createObject([
+                        'poolConfig' => create([
                             'class' => BasePoolProperties::class,
                             'config' => $config
                         ], [], false)
