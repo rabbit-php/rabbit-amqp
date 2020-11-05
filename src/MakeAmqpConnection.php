@@ -5,7 +5,6 @@ namespace Rabbit\Amqp;
 
 use DI\DependencyException;
 use DI\NotFoundException;
-use Exception;
 use Rabbit\Pool\BaseManager;
 use Rabbit\Pool\BasePool;
 use Rabbit\Pool\BasePoolProperties;
