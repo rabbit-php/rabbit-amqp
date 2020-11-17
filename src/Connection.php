@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rabbit\Amqp;
@@ -67,9 +68,7 @@ class Connection extends AbstractBase
             throw new NotSupportedException("have not $name");
         }
         $result = $this->channel->$name(...$arguments);
-        if (in_array($name, ['basic_publish'])) {
-            $this->release();
-        }
+        $this->release();
         return $result;
     }
 
@@ -85,15 +84,16 @@ class Connection extends AbstractBase
      * @param array $arguments
      * @throws ErrorException
      */
-    public function consume(string $consumer_tag = '',
-                            bool $no_local = false,
-                            bool $no_ack = false,
-                            bool $exclusive = false,
-                            bool $nowait = false,
-                            callable $callback = null,
-                            int $ticket = null,
-                            array $arguments = [])
-    {
+    public function consume(
+        string $consumer_tag = '',
+        bool $no_local = false,
+        bool $no_ack = false,
+        bool $exclusive = false,
+        bool $nowait = false,
+        callable $callback = null,
+        int $ticket = null,
+        array $arguments = []
+    ) {
         $this->channel->basic_consume($this->queue, $consumer_tag, $no_local, $no_ack, $exclusive, $nowait, function (AMQPMessage $message) use ($callback) {
             call_user_func($callback, $message);
             $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
