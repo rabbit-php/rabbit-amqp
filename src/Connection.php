@@ -68,7 +68,9 @@ class Connection extends AbstractBase
             throw new NotSupportedException("have not $name");
         }
         $result = $this->channel->$name(...$arguments);
-        $this->release();
+        if (in_array($name, ['basic_publish', 'batch_basic_publish'])) {
+            $this->release();
+        }
         return $result;
     }
 
