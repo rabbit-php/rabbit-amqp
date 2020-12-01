@@ -18,22 +18,14 @@ use Rabbit\Pool\AbstractBase;
  */
 class Connection extends AbstractBase
 {
-    /** @var string */
     public ?string $queue = null;
-    /** @var string */
     public ?string $exchange = null;
-    /** @var array */
-    protected array $connParams = [];
-    /** @var array */
     protected array $queueDeclare = [];
-    /** @var array */
     protected array $exchangeDeclare = [];
-    /** @var array */
     protected array $queueBind = [];
-    /** @var AMQPStreamConnection */
-    protected AMQPStreamConnection $conn;
-    /** @var AMQPChannel */
-    protected AMQPChannel $channel;
+    protected ?AMQPStreamConnection $conn = null;
+    protected ?AMQPChannel $channel = null;
+    protected string $dsn = 'tcp://127.0.0.1:5672';
 
     /**
      * @throws Exception
@@ -46,7 +38,14 @@ class Connection extends AbstractBase
 
     public function init(): void
     {
-        $this->conn = new AMQPStreamConnection(...$this->connParams);
+        $parseArr = parse_url($this->dsn);
+        $this->conn = new AMQPStreamConnection(...[
+            $parseArr['host'] ?? '127.0.0.1',
+            $parseArr['port'] ?? 5672,
+            $parseArr['user'] ?? '',
+            $parseArr['pass'] ?? '',
+            $parseArr['path'] ?? '/'
+        ]);
         $this->channel = $this->conn->channel();
         array_unshift($this->queueDeclare, $this->queue);
         $this->channel->queue_declare(...$this->queueDeclare);
