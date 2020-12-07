@@ -102,16 +102,18 @@ class Connection extends AbstractBase
                 $message->delivery_info['channel']->basic_cancel($message->delivery_info['consumer_tag']);
             }
         }, $ticket, $arguments);
-        $this->wait();
+        return $this;
     }
 
     /**
      * @throws ErrorException
      */
-    public function wait(): void
+    public function wait(bool &$wait = true): void
     {
-        while ($this->channel->is_consuming()) {
-            $this->channel->wait();
+        while ($wait) {
+            if ($this->channel->is_consuming()) {
+                $this->channel->wait();
+            }
         }
     }
 }
