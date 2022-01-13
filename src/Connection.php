@@ -51,7 +51,7 @@ class Connection extends AbstractBase
         $this->channel->queue_declare(...$this->queueDeclare);
         array_unshift($this->exchangeDeclare, $this->exchange);
         $this->channel->exchange_declare(...$this->exchangeDeclare);
-        $bind = array_merge([$this->queue, $this->exchange], $this->queueBind);
+        $bind = [$this->queue, $this->exchange, ...$this->queueBind];
         $this->channel->queue_bind(...$bind);
     }
 
