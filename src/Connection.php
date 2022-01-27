@@ -95,7 +95,7 @@ class Connection extends AbstractBase
         int $ticket = null,
         array $arguments = []
     ) {
-        $this->channel->basic_consume($this->queue, $consumer_tag, $no_local, $no_ack, $exclusive, $nowait, function (AMQPMessage $message) use ($callback) {
+        $this->channel->basic_consume($this->queue, $consumer_tag, $no_local, $no_ack, $exclusive, $nowait, function (AMQPMessage $message) use ($callback): void {
             call_user_func($callback, $message);
             $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
             if ($message->body === 'quit') {
