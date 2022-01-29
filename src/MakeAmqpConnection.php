@@ -26,15 +26,15 @@ class MakeAmqpConnection
     public static function addConnection(string $name, array $config = []): void
     {
         /** @var BaseManager $manager */
-        $manager = getDI('amqp');
+        $manager = service('amqp');
         if (!$manager->has($name)) {
             $conn = [
                 $name =>
                     create([
-                        'class' => BasePool::class,
+                        '{}' => BasePool::class,
                         'comClass' => Connection::class,
                         'poolConfig' => create([
-                            'class' => BasePoolProperties::class,
+                            '{}' => BasePoolProperties::class,
                             'config' => $config
                         ], [], false)
                     ], [], false)];
